@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-const payment = ({ params }: any) => {
+const Payment = ({ params }: any) => {
   const router = useRouter();
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -32,4 +32,4 @@ const payment = ({ params }: any) => {
   );
 };
 
-export default payment;
+export default Payment;

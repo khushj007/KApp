@@ -68,7 +68,7 @@ interface sidebarprops {
   apiLimit: Number;
 }
 
-const sidebar = ({ apiLimitCount, apiLimit, isPro }: sidebarprops) => {
+const Sidebar = ({ apiLimitCount, apiLimit, isPro }: sidebarprops) => {
   const pathname = usePathname();
   return (
     <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
@@ -114,4 +114,4 @@ const sidebar = ({ apiLimitCount, apiLimit, isPro }: sidebarprops) => {
   );
 };
 
-export default sidebar;
+export default Sidebar;

@@ -16,7 +16,7 @@ interface promodalInterface {
   onClose: () => void;
 }
 
-const freeCounter = ({ apiLimitCount, apiLimit, isPro }: any) => {
+const FreeCounter = ({ apiLimitCount, apiLimit, isPro }: any) => {
   const { isOpen, onClose, onOpen }: promodalInterface = useProModal();
   return (
     <div className="px-3">
@@ -41,4 +41,4 @@ const freeCounter = ({ apiLimitCount, apiLimit, isPro }: any) => {
   );
 };
 
-export default freeCounter;
+export default FreeCounter;
