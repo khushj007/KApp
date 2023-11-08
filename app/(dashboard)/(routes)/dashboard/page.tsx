@@ -19,7 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const tools = [
+const tools = [
   {
     label: "Conversation",
     icon: MessageSquare,
