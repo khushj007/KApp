@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs";
 import user from "@/schema/user_schema";
 import saveUser from "@/helpers/saveUser";
 import connect from "@/DBconfig";
-import { conversation } from "@/AI_API/Conversation";
 
 connect();
 
@@ -31,7 +30,10 @@ export async function POST(request: NextRequest) {
     const dbresponse = await user.findOne({ userId: data.userId });
 
     if (dbresponse.apiCount < dbresponse.apiLimit) {
-      const response = await conversation(messages);
+      const response = await openapi.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
       dbresponse.apiCount = dbresponse.apiCount + 1;
       await dbresponse.save();
       return NextResponse.json({
