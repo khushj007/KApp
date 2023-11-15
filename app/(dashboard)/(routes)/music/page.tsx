@@ -38,17 +38,27 @@ const MusicPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setMusic("");
+      const limitCheck = await axios.get("api/update");
 
-      // console.log(`Values`, values);
+      // console.log(`limitCheck`, limitCheck);
 
-      const response = await axios.post("/api/music", values);
-      // console.log(`RESPONSE`, response.data.message);
+      if (limitCheck.data.status === 201) {
+        // console.log(`inside limitcheck`);
+        //getting response from api
+        setMusic("");
 
-      if (response.data.status === 403) {
-        onOpen();
+        // console.log(`Values`, values);
+
+        const response = await axios.post("/api/music", values);
+        // console.log(`RESPONSE`, response.data.message);
+
+        if (response.data.status === 201) {
+          setMusic(response.data.message.audio);
+          onOpen();
+        }
       } else {
-        setMusic(response.data.message.audio);
+        toast.error("API COUNT IS EXCEDED FOR NORMAL VERSION");
+        onOpen();
       }
 
       form.reset();

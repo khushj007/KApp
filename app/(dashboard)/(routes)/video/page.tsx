@@ -38,18 +38,27 @@ const VideoPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setVideo("");
+      const limitCheck = await axios.get("api/update");
 
-      // console.log(`Values`, values);
+      // console.log(`limitCheck`, limitCheck);
 
-      const response = await axios.post("/api/video", values);
-      //   console.log(`RESPONSE`, response.data.message[0]);
+      if (limitCheck.data.status === 201) {
+        setVideo("");
 
-      if (response.data.status === 403) {
-        onOpen();
+        // console.log(`Values`, values);
+
+        const response = await axios.post("/api/video", values);
+        //   console.log(`RESPONSE`, response.data.message[0]);
+
+        if (response.data.status === 201) {
+          setVideo(response.data.message[0]);
+        }
       } else {
-        setVideo(response.data.message[0]);
+        toast.error("API COUNT IS EXCEDED FOR NORMAL VERSION");
+        onOpen();
       }
+
+      //added
 
       form.reset();
     } catch (error: any) {

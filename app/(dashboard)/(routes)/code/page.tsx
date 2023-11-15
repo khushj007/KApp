@@ -43,23 +43,32 @@ const CodePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: values.prompt,
-      };
+      const limitCheck = await axios.get("api/update");
 
-      const newMessages = [...messages, userMessage];
+      // console.log(`limitCheck`, limitCheck);
 
-      const response = await axios.post("/api/code", {
-        messages: newMessages,
-      });
+      if (limitCheck.data.status === 201) {
+        // console.log(`inside limitcheck`);
+        //getting response from api
+        const userMessage: ChatCompletionMessageParam = {
+          role: "user",
+          content: values.prompt,
+        };
 
-      if (response.data.status === 201) {
-        setMessages((prev) => {
-          return [...prev, userMessage, response.data.message];
+        const newMessages = [...messages, userMessage];
+
+        const response = await axios.post("/api/code", {
+          messages: newMessages,
         });
-      } else if (response.data.status === 403) {
-        onOpen();
+
+        if (response.data.status === 201) {
+          setMessages((prev) => {
+            return [...prev, userMessage, response.data.message];
+          });
+        } else {
+          toast.error("API COUNT IS EXCEDED FOR NORMAL VERSION");
+          onOpen();
+        }
       }
 
       form.reset();

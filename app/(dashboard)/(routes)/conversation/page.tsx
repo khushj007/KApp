@@ -20,8 +20,6 @@ import UserAvatar from "@/components/user-avatar";
 import BotAvatar from "@/components/bot-avatar";
 import { useProModal } from "@/hooks/use-pro-model";
 import toast from "react-hot-toast";
-import connect from "@/DBconfig";
-import user from "@/schema/user_schema";
 
 const ConversationPage = () => {
   interface promodalInterface {
@@ -46,12 +44,12 @@ const ConversationPage = () => {
     try {
       //updating user data
 
-      const limitCheck = await axios.get("api/conversation");
+      const limitCheck = await axios.get("api/update");
 
       // console.log(`limitCheck`, limitCheck);
 
       if (limitCheck.data.status === 201) {
-        console.log(`inside limitcheck`);
+        // console.log(`inside limitcheck`);
         //getting response from api
         const userMessage: ChatCompletionMessageParam = {
           role: "user",
@@ -60,7 +58,7 @@ const ConversationPage = () => {
 
         const newMessages = [...messages, userMessage];
 
-        const response = await axios.post("/api/test", {
+        const response = await axios.post("/api/conversation", {
           messages: newMessages,
         });
 

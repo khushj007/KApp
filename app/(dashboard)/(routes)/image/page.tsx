@@ -56,21 +56,29 @@ const CodePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setImages([]);
-      //   console.log(`VALUES`, values);
-      const response = await axios.post("/api/image", values);
+      const limitCheck = await axios.get("api/update");
+      if (limitCheck.data.status === 201) {
+        setImages([]);
+        //   console.log(`VALUES`, values);
+        const response = await axios.post("/api/image", values);
 
-      // if request limit exceeds
-      if (response.data.status === 403) {
+        // if request limit exceeds
+        if (response.data.status === 403) {
+          onOpen();
+        }
+        const urls = response.data.message.map(
+          (image: { url: string }) => image.url
+        );
+        //   console.log(`RESPONSE`, urls);
+        setImages(urls);
+
+        //added
+
+        form.reset();
+      } else {
+        toast.error("API COUNT IS EXCEDED FOR NORMAL VERSION");
         onOpen();
       }
-      const urls = response.data.message.map(
-        (image: { url: string }) => image.url
-      );
-      //   console.log(`RESPONSE`, urls);
-      setImages(urls);
-
-      form.reset();
     } catch (error: any) {
       //to Open Pro model
       console.log(`error image frontend`, error.message);
