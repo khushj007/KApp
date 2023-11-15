@@ -20,6 +20,8 @@ import UserAvatar from "@/components/user-avatar";
 import BotAvatar from "@/components/bot-avatar";
 import { useProModal } from "@/hooks/use-pro-model";
 import toast from "react-hot-toast";
+import connect from "@/DBconfig";
+import user from "@/schema/user_schema";
 
 const ConversationPage = () => {
   interface promodalInterface {
@@ -42,24 +44,36 @@ const ConversationPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage: ChatCompletionMessageParam = {
-        role: "user",
-        content: values.prompt,
-      };
+      //updating user data
 
-      const newMessages = [...messages, userMessage];
+      const limitCheck = await axios.get("api/conversation");
 
-      const response = await axios.post("/api/test", {
-        messages: newMessages,
-      });
+      // console.log(`limitCheck`, limitCheck);
 
-      if (response.data.status === 201) {
-        setMessages((prev) => {
-          return [...prev, userMessage, response.data.message];
+      if (limitCheck.data.status === 201) {
+        console.log(`inside limitcheck`);
+        //getting response from api
+        const userMessage: ChatCompletionMessageParam = {
+          role: "user",
+          content: values.prompt,
+        };
+
+        const newMessages = [...messages, userMessage];
+
+        const response = await axios.post("/api/test", {
+          messages: newMessages,
         });
-      } else if (response.data.status === 403) {
+
+        if (response.data.status === 201) {
+          setMessages((prev) => {
+            return [...prev, userMessage, response.data.message];
+          });
+        }
+      } else {
+        toast.error("API COUNT IS EXCEDED FOR NORMAL VERSION");
         onOpen();
       }
+
       // console.log(`RESPONSE`, response.data.message);
 
       form.reset();
