@@ -63,8 +63,12 @@ const VideoPage = () => {
       form.reset();
     } catch (error: any) {
       //to Open Pro model
-      console.log(`error video frontend`, error.message);
-      toast.error(error.message);
+      if (error.response.status === 500) {
+        toast.error(`Websit apilimit is over we will renew it after some time`);
+      } else {
+        console.log(`error video frontend`, error.response.status);
+        toast.error(error.message);
+      }
     } finally {
       router.refresh();
     }

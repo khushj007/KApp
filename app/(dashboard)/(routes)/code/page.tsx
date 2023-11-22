@@ -74,8 +74,12 @@ const CodePage = () => {
       form.reset();
     } catch (error: any) {
       //to Open Pro model
-      console.log(`error code frontend`, error.message);
-      toast.error(error.message);
+      if (error.response.status === 500) {
+        toast.error(`Websit apilimit is over we will renew it after some time`);
+      } else {
+        console.log(`error code frontend`, `Owner Api Limit is over`);
+        toast.error(error.message);
+      }
     } finally {
       router.refresh();
     }
