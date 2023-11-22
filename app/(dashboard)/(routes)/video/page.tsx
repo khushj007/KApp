@@ -40,15 +40,13 @@ const VideoPage = () => {
     try {
       setVideo("");
 
-      // console.log(`Values`, values);
+      const checking = await axios.get("/api/check");
 
-      const response = await axios.post("/api/video", values);
-      //   console.log(`RESPONSE`, response.data.message[0]);
-
-      if (response.data.status === 403) {
-        onOpen();
-      } else {
+      if (checking.data.status === 201) {
+        const response = await axios.post("/api/video", values);
         setVideo(response.data.message[0]);
+      } else {
+        onOpen();
       }
 
       form.reset();

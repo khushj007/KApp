@@ -50,18 +50,18 @@ const CodePage = () => {
 
       const newMessages = [...messages, userMessage];
 
-      const response = await axios.post("/api/code", {
-        messages: newMessages,
-      });
+      const checking = await axios.get("/api/check");
 
-      if (response.data.status === 201) {
+      if (checking.data.status === 201) {
+        const response = await axios.post("/api/code", {
+          messages: newMessages,
+        });
         setMessages((prev) => {
           return [...prev, userMessage, response.data.message];
         });
-      } else if (response.data.status === 403) {
+      } else {
         onOpen();
       }
-
       form.reset();
     } catch (error: any) {
       //to Open Pro model

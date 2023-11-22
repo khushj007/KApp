@@ -58,17 +58,19 @@ const CodePage = () => {
     try {
       setImages([]);
       //   console.log(`VALUES`, values);
-      const response = await axios.post("/api/image", values);
 
-      // if request limit exceeds
-      if (response.data.status === 403) {
+      const checking = await axios.get("/api/check");
+      if (checking.data.status === 201) {
+        const response = await axios.post("/api/image", values);
+
+        const urls = response.data.message.map(
+          (image: { url: string }) => image.url
+        );
+
+        setImages(urls);
+      } else {
         onOpen();
       }
-      const urls = response.data.message.map(
-        (image: { url: string }) => image.url
-      );
-      //   console.log(`RESPONSE`, urls);
-      setImages(urls);
 
       form.reset();
     } catch (error: any) {

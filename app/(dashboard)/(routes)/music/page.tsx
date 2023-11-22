@@ -40,17 +40,14 @@ const MusicPage = () => {
     try {
       setMusic("");
 
-      // console.log(`Values`, values);
+      const checking = await axios.get("/api/check");
 
-      const response = await axios.post("/api/music", values);
-      // console.log(`RESPONSE`, response.data.message);
-
-      if (response.data.status === 403) {
-        onOpen();
-      } else {
+      if (checking.data.status === 201) {
+        const response = await axios.post("/api/music", values);
         setMusic(response.data.message.audio);
+      } else {
+        onOpen();
       }
-
       form.reset();
     } catch (error: any) {
       //to Open Pro model

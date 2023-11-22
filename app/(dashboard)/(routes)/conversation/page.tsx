@@ -20,6 +20,7 @@ import UserAvatar from "@/components/user-avatar";
 import BotAvatar from "@/components/bot-avatar";
 import { useProModal } from "@/hooks/use-pro-model";
 import toast from "react-hot-toast";
+import { updateData } from "@/helpers/updateData";
 
 const ConversationPage = () => {
   interface promodalInterface {
@@ -49,17 +50,28 @@ const ConversationPage = () => {
 
       const newMessages = [...messages, userMessage];
 
-      const response = await axios.post("/api/test", {
-        messages: newMessages,
-      });
+      // making new progress
 
-      if (response.data.status === 201) {
+      const checking = await axios.get("/api/check");
+
+      if (checking.data.status === 201) {
+        const response = await axios.post("/api/conversation", {
+          messages: newMessages,
+        });
         setMessages((prev) => {
           return [...prev, userMessage, response.data.message];
         });
-      } else if (response.data.status === 403) {
+      } else {
         onOpen();
       }
+
+      // if (response.data.status === 201) {
+      //   setMessages((prev) => {
+      //     return [...prev, userMessage, response.data.message];
+      //   });
+      // } else if (response.data.status === 403) {
+      //   onOpen();
+      // }
       // console.log(`RESPONSE`, response.data.message);
 
       form.reset();
