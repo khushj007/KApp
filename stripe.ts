@@ -1,5 +1,4 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { stripe_api, domain } from "./keys";
 
 export async function checkout({ lineItems }: any) {
   const stripe = await loadStripe(process.env.NEXT_PUBLIC_PAYMENT!);
