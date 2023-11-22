@@ -7,33 +7,37 @@ import connect from "@/DBconfig";
 
 connect();
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const data = auth();
     // console.log(`USERID`, userId); working
 
-    // const { messages } = await request.json();
-    //  console.log(`message`, messages);
+    const { messages } = await request.json();
+    // console.log(`message`, messages);
 
     if (!data.userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // if (!messages) {
-    //   return NextResponse.json(
-    //     { message: "Data not received" },
-    //     { status: 400 }
-    //   );
-    // }
+    if (!messages) {
+      return NextResponse.json(
+        { message: "Data not received" },
+        { status: 400 }
+      );
+    }
 
     // check for api counts and user
     const dbresponse = await user.findOne({ userId: data.userId });
 
     if (dbresponse.apiCount < dbresponse.apiLimit) {
+      const response = await openapi.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
       dbresponse.apiCount = dbresponse.apiCount + 1;
       await dbresponse.save();
       return NextResponse.json({
-        message: "userData updated successfussly",
+        message: response.choices[0].message,
         status: 201,
       });
     } else {
